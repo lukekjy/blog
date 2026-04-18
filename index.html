@@ -300,7 +300,6 @@
         editGallery.innerHTML = '';
         viewGallery.innerHTML = '';
         currentImages.forEach((src, idx) => {
-            // Edit View
             const divEdit = document.createElement('div');
             divEdit.className = 'image-item';
             divEdit.innerHTML = `<img src="${src}"><button class="remove-img">X</button>`;
@@ -311,7 +310,6 @@
             };
             editGallery.appendChild(divEdit);
             
-            // View Mode
             const divView = document.createElement('div');
             divView.className = 'image-item';
             divView.innerHTML = `<img src="${src}">`;
@@ -332,12 +330,13 @@
         saveBtn.disabled = true;
         statusField.textContent = "저장 중...";
         
+        const existingPost = posts.find(p => p.id === currentPostId);
         const data = { 
             title, 
             content, 
             images: currentImages, 
-            author: auth.currentUser.email, // 작성자 이메일 저장
-            createdAt: currentPostId ? (posts.find(p => p.id === currentPostId).createdAt || Date.now()) : Date.now(),
+            author: auth.currentUser.email,
+            createdAt: existingPost ? (existingPost.createdAt || Date.now()) : Date.now(),
             updatedAt: Date.now() 
         };
 
@@ -367,7 +366,7 @@
         if (files.length === 0) return;
         
         statusField.textContent = "이미지 처리 중...";
-        let loaded = 0;
+        let loadedCount = 0;
         
         files.forEach(file => {
             const reader = new FileReader();
@@ -382,16 +381,18 @@
                     canvas.getContext('2d').drawImage(img, 0, 0, w, h);
                     currentImages.push(canvas.toDataURL('image/jpeg', 0.6));
                     
-                    loaded++;
-                    if (loaded === files.length) {
+                    loadedCount++;
+                    if (loadedCount === files.length) {
                         renderGalleries();
-                        statusField.textContent = `✅ 이미지 ${files.length}개 추가됨`;
+                        statusField.textContent = `✅ 이미지 추가됨`;
                     }
                 };
                 img.src = ev.target.result;
             };
             reader.readAsDataURL(file);
         });
+        // 입력 초기화하여 같은 파일 다시 선택 가능하게 함
+        e.target.value = '';
     };
 
     saveBtn.onclick = savePost;
@@ -402,17 +403,14 @@
     };
     document.getElementById('editBtn').onclick = () => {
         const p = posts.find(x => x.id === currentPostId);
+        if (!p) return;
         postTitle.value = p.title; postContent.value = p.content;
         switchMode('edit');
         statusField.textContent = "글 수정 중...";
     };
     document.getElementById('cancelBtn').onclick = () => loadPost(currentPostId);
-    document.getElementById('deleteBtn').onclick = () => {
-        if (!confirm("정말 삭제할까요?")) return;
-        deletePost();
-    };
-
-    async function deletePost() {
+    document.getElementById('deleteBtn').onclick = async () => {
+        // [수정] 확인창 없이 즉시 삭제 실행
         try {
             statusField.textContent = "삭제 중...";
             await deleteDoc(doc(db, "posts", currentPostId));
@@ -422,7 +420,7 @@
         } catch (e) {
             statusField.textContent = "❌ 삭제 실패";
         }
-    }
+    };
 
     document.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.key === 's') { e.preventDefault(); savePost(); }
