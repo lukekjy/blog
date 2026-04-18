@@ -7,19 +7,18 @@
     <link rel="stylesheet" href="https://unpkg.com/98.css">
     <style>
         body {
-            background-color: #008080; /* Windows 98 Teal */
-            padding: 40px;
+            background-color: #008080;
+            padding: 30px;
             font-family: "Pixelated MS Sans Serif", Arial, sans-serif;
-            font-size: 16px;
+            font-size: 14px;
         }
         .window {
-            width: 1100px;
+            width: 1000px;
             max-width: 95%;
             margin: 0 auto;
         }
-        /* Login Window Styles */
         #loginWindow {
-            width: 350px;
+            width: 320px;
             position: fixed;
             top: 50%;
             left: 50%;
@@ -29,7 +28,7 @@
         .window-body {
             display: flex;
             gap: 15px;
-            min-height: 700px;
+            min-height: 650px;
         }
         .sidebar {
             flex: 1;
@@ -43,7 +42,7 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            max-height: 700px;
+            max-height: 650px;
         }
         .post-list {
             list-style: none;
@@ -55,24 +54,22 @@
             border: 2px inset #808080;
         }
         .post-list li {
-            padding: 10px;
+            padding: 8px;
             cursor: pointer;
             border-bottom: 1px solid #dfdfdf;
-            font-size: 14px;
         }
         .post-list li:hover, .post-list li.selected {
             background-color: #000080;
             color: white;
         }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 4px; font-weight: bold; }
         input[type="text"], input[type="password"], input[type="email"], textarea {
             width: 100%;
             box-sizing: border-box;
-            padding: 5px;
-            font-size: 14px;
+            padding: 4px;
         }
-        textarea { height: 300px; resize: vertical; }
+        textarea { height: 350px; resize: vertical; }
         .image-gallery {
             display: flex;
             flex-wrap: wrap;
@@ -85,8 +82,8 @@
         }
         .image-item {
             position: relative;
-            width: 150px;
-            height: 150px;
+            width: 130px;
+            height: 130px;
             border: 2px outset #dfdfdf;
             background: white;
             display: flex; align-items: center; justify-content: center;
@@ -99,14 +96,14 @@
             font-size: 10px; background: #c0c0c0; border: 2px outset #dfdfdf;
             cursor: pointer; z-index: 10;
         }
-        #viewMode { padding: 10px; background: white; border: 2px inset #808080; flex-grow: 1; overflow-y: auto; }
-        #viewTitle { font-size: 24px; margin-top: 0; border-bottom: 2px solid #000080; padding-bottom: 10px; }
-        #viewContent { white-space: pre-wrap; line-height: 1.6; margin-top: 20px; }
+        #viewMode { padding: 20px; background: white; border: 2px inset #808080; flex-grow: 1; overflow-y: auto; }
+        #viewTitle { font-size: 22px; margin-top: 0; border-bottom: 2px solid #000080; padding-bottom: 8px; }
+        #viewContent { white-space: pre-wrap; line-height: 1.6; margin-top: 15px; }
         #lightbox {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center;
         }
-        #lightbox img { max-width: 90%; max-height: 90%; border: 4px solid #dfdfdf; box-shadow: 0 0 20px black; }
+        #lightbox img { max-width: 90%; max-height: 90%; border: 4px solid #dfdfdf; }
         .hidden { display: none !important; }
         .toolbar { margin-bottom: 15px; display: flex; gap: 5px; }
         .status-bar { margin-top: 15px; }
@@ -114,86 +111,72 @@
 </head>
 <body>
 
-<!-- LOGIN WINDOW -->
+<!-- LOGIN -->
 <div id="loginWindow" class="window">
-    <div class="title-bar">
-        <div class="title-bar-text">사용자 인증 - Login.exe</div>
-    </div>
+    <div class="title-bar"><div class="title-bar-text">사용자 인증</div></div>
     <div class="window-body" style="display: block; min-height: auto; padding: 20px;">
-        <p>이 블로그는 우리 가족만 사용할 수 있습니다.<br>로그인해 주세요.</p>
         <div class="form-group">
             <label>이메일:</label>
-            <input type="email" id="loginEmail" placeholder="email@address.com">
+            <input type="email" id="loginEmail" placeholder="family@email.com">
         </div>
         <div class="form-group">
             <label>비밀번호:</label>
             <input type="password" id="loginPassword">
         </div>
-        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-            <button id="loginBtn">로그인</button>
-        </div>
-        <p id="loginError" style="color: red; font-size: 12px; margin-top: 10px;"></p>
+        <button id="loginBtn" style="width: 100%; margin-top: 10px;">로그인</button>
+        <p id="loginError" style="color: red; font-size: 11px; margin-top: 5px;"></p>
     </div>
 </div>
 
-<!-- MAIN BLOG WINDOW -->
+<!-- BLOG -->
 <div id="blogWindow" class="window hidden">
     <div class="title-bar">
         <div class="title-bar-text">가족 비밀 블로그 - Blog.exe</div>
         <div class="title-bar-controls">
-            <button id="logoutBtn" style="min-width: 60px; height: 18px; font-size: 10px; margin-right: 5px;">로그아웃</button>
-            <button aria-label="Minimize"></button>
-            <button aria-label="Maximize"></button>
-            <button aria-label="Close"></button>
+            <button id="logoutBtn" style="font-size: 10px; min-width: 50px;">로그아웃</button>
         </div>
     </div>
     <div class="window-body">
         <div class="sidebar">
             <p><b>포스트 목록</b></p>
             <ul id="postList" class="post-list"></ul>
-            <div class="toolbar" style="margin-top: 15px;">
-                <button id="newPostBtn">새 포스트</button>
-            </div>
+            <button id="newPostBtn" style="margin-top: 10px;">새 포스트 작성</button>
         </div>
         <div class="main-content">
             <div id="viewMode" class="hidden">
                 <h1 id="viewTitle"></h1>
                 <div id="viewGallery" class="image-gallery"></div>
                 <div id="viewContent"></div>
-                <div class="toolbar" style="margin-top: 20px;">
-                    <button id="editBtn">편집 (E)</button>
+                <div class="toolbar" style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button id="editBtn">수정하기</button>
                     <button id="deleteBtn" style="margin-left: auto;">삭제</button>
                 </div>
             </div>
             <div id="editMode">
                 <div class="form-group">
-                    <label for="postTitle">제목:</label>
-                    <input type="text" id="postTitle" />
+                    <label>제목:</label>
+                    <input type="text" id="postTitle">
                 </div>
                 <div class="form-group">
                     <label>이미지 관리:</label>
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="postImageURL" placeholder="URL 입력..." style="flex: 1;" />
-                        <button type="button" onclick="addImageFromURL()">추가</button>
-                        <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" />
-                        <button type="button" onclick="document.getElementById('fileInput').click()">파일 선택...</button>
-                    </div>
+                    <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+                    <button type="button" onclick="document.getElementById('fileInput').click()">이미지 추가하기...</button>
                     <div id="editGallery" class="image-gallery"></div>
                 </div>
                 <div class="form-group">
-                    <label for="postContent">내용:</label>
+                    <label>내용:</label>
                     <textarea id="postContent"></textarea>
                 </div>
-                <div class="toolbar">
-                    <button id="saveBtn">저장 (S)</button>
+                <div class="toolbar" style="display: flex; gap: 10px;">
+                    <button id="saveBtn">서버에 저장</button>
                     <button id="cancelBtn" class="hidden">취소</button>
                 </div>
             </div>
         </div>
     </div>
     <div class="status-bar">
-        <p class="status-bar-field" id="statusField">연결 중...</p>
-        <p class="status-bar-field" id="userEmailField">로그인 안 됨</p>
+        <p class="status-bar-field" id="statusField">서버 연결 중...</p>
+        <p class="status-bar-field" id="userEmailField"></p>
     </div>
 </div>
 
@@ -203,22 +186,19 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { initializeFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCx9VqGtY1oTPwcWc6PfGCeP--4sRDMWfM",
       authDomain: "my-blog-7a6ad.firebaseapp.com",
-      databaseURL: "https://my-blog-7a6ad-default-rtdb.firebaseio.com",
       projectId: "my-blog-7a6ad",
       storageBucket: "my-blog-7a6ad.firebasestorage.app",
-      messagingSenderId: "918789718204",
-      appId: "1:918789718204:web:2d61c1a84e9ed4c3d190b9",
-      measurementId: "G-0MER5GB068"
+      appId: "1:918789718204:web:2d61c1a84e9ed4c3d190b9"
     };
 
     const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    const db = initializeFirestore(app, { experimentalForceLongPolling: true });
     const auth = getAuth(app);
     const postsCol = collection(db, "posts");
 
@@ -226,34 +206,25 @@
     let currentPostId = null;
     let currentImages = [];
 
-    // Elements
+    // Global Elements
     const loginWindow = document.getElementById('loginWindow');
     const blogWindow = document.getElementById('blogWindow');
-    const loginEmail = document.getElementById('loginEmail');
-    const loginPassword = document.getElementById('loginPassword');
-    const loginBtn = document.getElementById('loginBtn');
-    const loginError = document.getElementById('loginError');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const userEmailField = document.getElementById('userEmailField');
     const postList = document.getElementById('postList');
     const viewMode = document.getElementById('viewMode');
     const editMode = document.getElementById('editMode');
     const viewTitle = document.getElementById('viewTitle');
     const viewContent = document.getElementById('viewContent');
     const viewGallery = document.getElementById('viewGallery');
+    const editGallery = document.getElementById('editGallery');
     const postTitle = document.getElementById('postTitle');
     const postContent = document.getElementById('postContent');
-    const editGallery = document.getElementById('editGallery');
-    const postImageURL = document.getElementById('postImageURL');
-    const fileInput = document.getElementById('fileInput');
-    const saveBtn = document.getElementById('saveBtn');
-    const editBtn = document.getElementById('editBtn');
-    const deleteBtn = document.getElementById('deleteBtn');
-    const newPostBtn = document.getElementById('newPostBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
     const statusField = document.getElementById('statusField');
+    const userEmailField = document.getElementById('userEmailField');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const fileInput = document.getElementById('fileInput');
 
-    // AUTH LOGIC
+    // AUTH
     onAuthStateChanged(auth, (user) => {
         if (user) {
             loginWindow.classList.add('hidden');
@@ -263,117 +234,145 @@
         } else {
             loginWindow.classList.remove('hidden');
             blogWindow.classList.add('hidden');
-            userEmailField.textContent = "로그인 안 됨";
         }
     });
 
-    loginBtn.onclick = async () => {
-        const email = loginEmail.value.trim();
-        const pw = loginPassword.value;
+    document.getElementById('loginBtn').onclick = async () => {
+        const email = document.getElementById('loginEmail').value.trim();
+        const pw = document.getElementById('loginPassword').value;
         try {
-            loginError.textContent = "로그인 중...";
             await signInWithEmailAndPassword(auth, email, pw);
         } catch (e) {
-            loginError.textContent = "로그인 실패: 이메일 또는 비번을 확인하세요.";
+            document.getElementById('loginError').textContent = "로그인 실패: 이메일 또는 비밀번호 확인";
         }
     };
 
-    logoutBtn.onclick = () => signOut(auth);
+    document.getElementById('logoutBtn').onclick = () => signOut(auth);
 
     // BLOG LOGIC
     function initBlog() {
-        const q = query(postsCol, orderBy("createdAt", "desc"));
-        onSnapshot(q, (snapshot) => {
+        onSnapshot(query(postsCol), (snapshot) => {
             posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            posts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
             renderPosts();
-            statusField.textContent = "동기화됨";
+            statusField.textContent = `✅ 서버 동기화 완료 (${posts.length}개)`;
+        }, (err) => {
+            statusField.textContent = "❌ 연결 오류";
         });
     }
 
     function renderPosts() {
         postList.innerHTML = '';
-        posts.forEach((post) => {
+        posts.forEach(p => {
             const li = document.createElement('li');
-            li.textContent = post.title || "(제목 없음)";
-            li.onclick = () => loadPost(post.id);
-            if (currentPostId === post.id) li.classList.add('selected');
+            li.textContent = p.title || "(제목 없음)";
+            li.onclick = () => loadPost(p.id);
+            if (currentPostId === p.id) li.classList.add('selected');
             postList.appendChild(li);
         });
     }
 
-    function loadPost(docId) {
-        currentPostId = docId;
-        const post = posts.find(p => p.id === docId);
-        if (!post) return;
-        viewTitle.textContent = post.title;
-        viewContent.textContent = post.content;
-        currentImages = [...(post.images || [])];
-        postTitle.value = post.title;
-        postContent.value = post.content;
+    function loadPost(id) {
+        currentPostId = id;
+        const p = posts.find(x => x.id === id);
+        if (!p) return;
+        viewTitle.textContent = p.title;
+        viewContent.textContent = p.content;
+        currentImages = [...(p.images || [])];
         renderGalleries();
-        renderPosts();
         switchMode('view');
+    }
+
+    function renderGalleries() {
+        editGallery.innerHTML = '';
+        viewGallery.innerHTML = '';
+        currentImages.forEach((src, idx) => {
+            // Edit View
+            const divEdit = document.createElement('div');
+            divEdit.className = 'image-item';
+            divEdit.innerHTML = `<img src="${src}"><button class="remove-img">X</button>`;
+            divEdit.querySelector('.remove-img').onclick = (e) => { 
+                e.stopPropagation(); 
+                currentImages.splice(idx, 1); 
+                renderGalleries(); 
+            };
+            editGallery.appendChild(divEdit);
+            
+            // View Mode
+            const divView = document.createElement('div');
+            divView.className = 'image-item';
+            divView.innerHTML = `<img src="${src}">`;
+            divView.onclick = () => { 
+                document.getElementById('lightboxImg').src = src; 
+                document.getElementById('lightbox').style.display = 'flex'; 
+            };
+            viewGallery.appendChild(divView);
+        });
+        viewGallery.classList.toggle('hidden', currentImages.length === 0);
     }
 
     async function savePost() {
         const title = postTitle.value.trim();
         const content = postContent.value.trim();
-        if (!title) { alert('제목을 입력하세요!'); return; }
-        statusField.textContent = "저장 중...";
-        const postData = { title, content, images: currentImages, updatedAt: serverTimestamp() };
-        try {
-            if (currentPostId) await updateDoc(doc(db, "posts", currentPostId), postData);
-            else { postData.createdAt = serverTimestamp(); const docRef = await addDoc(postsCol, postData); currentPostId = docRef.id; }
-            statusField.textContent = "저장됨";
-            loadPost(currentPostId);
-        } catch (e) { alert("저장 실패!"); }
-    }
+        if (!title) { statusField.textContent = "⚠️ 제목을 입력하세요!"; return; }
 
-    function renderGalleries() {
-        editGallery.innerHTML = '';
-        currentImages.forEach((src, idx) => {
-            const div = document.createElement('div');
-            div.className = 'image-item';
-            div.innerHTML = `<img src="${src}"><button class="remove-img">X</button>`;
-            div.onclick = () => openLightbox(src);
-            div.querySelector('.remove-img').onclick = (e) => { e.stopPropagation(); currentImages.splice(idx, 1); renderGalleries(); };
-            editGallery.appendChild(div);
-        });
-        viewGallery.innerHTML = '';
-        currentImages.forEach((src) => {
-            const div = document.createElement('div');
-            div.className = 'image-item';
-            div.innerHTML = `<img src="${src}">`;
-            div.onclick = () => openLightbox(src);
-            viewGallery.appendChild(div);
-        });
-        viewGallery.classList.toggle('hidden', currentImages.length === 0);
+        saveBtn.disabled = true;
+        statusField.textContent = "저장 중...";
+        
+        const data = { 
+            title, 
+            content, 
+            images: currentImages, 
+            createdAt: currentPostId ? (posts.find(p => p.id === currentPostId).createdAt || Date.now()) : Date.now(),
+            updatedAt: Date.now() 
+        };
+
+        try {
+            if (currentPostId) await updateDoc(doc(db, "posts", currentPostId), data);
+            else {
+                const docRef = await addDoc(postsCol, data);
+                currentPostId = docRef.id;
+            }
+            statusField.textContent = "✅ 저장 완료";
+            loadPost(currentPostId);
+        } catch (e) {
+            statusField.textContent = "❌ 저장 실패";
+        } finally {
+            saveBtn.disabled = false;
+        }
     }
 
     function switchMode(mode) {
-        if (mode === 'view') { editMode.classList.add('hidden'); viewMode.classList.remove('hidden'); }
-        else { viewMode.classList.add('hidden'); editMode.classList.remove('hidden'); cancelBtn.classList.toggle('hidden', currentPostId === null); }
+        viewMode.classList.toggle('hidden', mode !== 'view');
+        editMode.classList.toggle('hidden', mode !== 'edit');
+        cancelBtn.classList.toggle('hidden', currentPostId === null);
     }
 
-    window.addImageFromURL = function() {
-        const url = postImageURL.value.trim();
-        if (url) { currentImages.push(url); renderGalleries(); postImageURL.value = ''; }
-    };
-
-    fileInput.onchange = function(e) {
+    fileInput.onchange = (e) => {
         const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+        
+        statusField.textContent = "이미지 처리 중...";
+        let loaded = 0;
+        
         files.forEach(file => {
             const reader = new FileReader();
             reader.onload = (ev) => {
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX = 1200; let w = img.width, h = img.height;
-                    if (w > MAX) { h *= MAX / w; w = MAX; }
+                    const MAX = 600;
+                    let w = img.width, h = img.height;
+                    if (w > MAX) { h *= MAX/w; w = MAX; }
                     canvas.width = w; canvas.height = h;
-                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, w, h);
-                    currentImages.push(canvas.toDataURL('image/jpeg', 0.8));
-                    renderGalleries();
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    currentImages.push(canvas.toDataURL('image/jpeg', 0.6));
+                    
+                    loaded++;
+                    if (loaded === files.length) {
+                        renderGalleries();
+                        statusField.textContent = `✅ 이미지 ${files.length}개 추가됨`;
+                    }
                 };
                 img.src = ev.target.result;
             };
@@ -381,27 +380,42 @@
         });
     };
 
-    function openLightbox(src) { document.getElementById('lightboxImg').src = src; document.getElementById('lightbox').style.display = 'flex'; }
     saveBtn.onclick = savePost;
-    editBtn.onclick = () => switchMode('edit');
-    cancelBtn.onclick = () => { if (currentPostId) loadPost(currentPostId); else startNewPost(); };
-    newPostBtn.onclick = startNewPost;
-    deleteBtn.onclick = async () => {
-        if (!confirm('삭제하시겠습니까?')) return;
-        await deleteDoc(doc(db, "posts", currentPostId));
-        startNewPost();
+    document.getElementById('newPostBtn').onclick = () => {
+        currentPostId = null; postTitle.value = ''; postContent.value = ''; currentImages = [];
+        renderGalleries(); switchMode('edit'); postTitle.focus();
+        statusField.textContent = "새 글 작성 중...";
+    };
+    document.getElementById('editBtn').onclick = () => {
+        const p = posts.find(x => x.id === currentPostId);
+        postTitle.value = p.title; postContent.value = p.content;
+        switchMode('edit');
+        statusField.textContent = "글 수정 중...";
+    };
+    document.getElementById('cancelBtn').onclick = () => loadPost(currentPostId);
+    document.getElementById('deleteBtn').onclick = () => {
+        // alert 대신 상태바와 실수를 방지하는 흐름으로 처리 가능하지만, 
+        // 삭제는 중요하므로 브라우저 기본 confirm만 사용합니다 (팝업 알림과 다름).
+        if (!confirm("정말 삭제할까요?")) return;
+        deletePost();
     };
 
-    function startNewPost() {
-        currentPostId = null; postTitle.value = ''; postContent.value = ''; currentImages = [];
-        renderGalleries(); renderPosts(); switchMode('edit'); postTitle.focus();
+    async function deletePost() {
+        try {
+            statusField.textContent = "삭제 중...";
+            await deleteDoc(doc(db, "posts", currentPostId));
+            currentPostId = null;
+            document.getElementById('newPostBtn').onclick();
+            statusField.textContent = "✅ 삭제 완료";
+        } catch (e) {
+            statusField.textContent = "❌ 삭제 실패";
+        }
     }
 
     document.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.key === 's') { e.preventDefault(); savePost(); }
-        if (e.key === 'e' && !viewMode.classList.contains('hidden')) switchMode('edit');
+        if (e.key === 'e' && !viewMode.classList.contains('hidden')) document.getElementById('editBtn').click();
     });
 </script>
-
 </body>
 </html>
