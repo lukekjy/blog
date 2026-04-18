@@ -64,6 +64,14 @@
             background-color: #000080;
             color: white;
         }
+        .post-list li.notice {
+            background-color: #ffffcc;
+            font-weight: bold;
+        }
+        .post-list li.notice:hover, .post-list li.notice.selected {
+            background-color: #000080;
+            color: white;
+        }
         .post-author-tag {
             font-size: 10px;
             opacity: 0.7;
@@ -163,6 +171,9 @@
             </div>
             <!-- EDIT MODE -->
             <div id="editMode">
+                <div id="noticeGroup" class="form-group hidden">
+                    <input type="checkbox" id="postIsNotice"> <label for="postIsNotice" style="display: inline;">공지사항으로 등록 (관리자 전용)</label>
+                </div>
                 <div class="form-group">
                     <label>제목:</label>
                     <input type="text" id="postTitle">
@@ -207,6 +218,8 @@
       appId: "1:918789718204:web:2d61c1a84e9ed4c3d190b9"
     };
 
+    const ADMIN_EMAIL = "lukekjy1310@gmail.com";
+
     const app = initializeApp(firebaseConfig);
     const db = initializeFirestore(app, { experimentalForceLongPolling: true });
     const auth = getAuth(app);
@@ -240,7 +253,8 @@
         if (user) {
             loginWindow.classList.add('hidden');
             blogWindow.classList.remove('hidden');
-            userEmailField.textContent = user.email;
+            const isAdmin = user.email === ADMIN_EMAIL;
+            userEmailField.textContent = user.email + (isAdmin ? " (관리자)" : "");
             initBlog();
         } else {
             loginWindow.classList.remove('hidden');
@@ -277,7 +291,9 @@
         posts.forEach(p => {
             const li = document.createElement('li');
             const authorShort = p.author ? p.author.split('@')[0] : "익명";
-            li.innerHTML = `<span>${p.title || "(제목 없음)"}</span><span class="post-author-tag">${authorShort}</span>`;
+            const prefix = p.isNotice ? "<b>[공지]</b> " : "";
+            if (p.isNotice) li.classList.add('notice');
+            li.innerHTML = `<span>${prefix}${p.title || "(제목 없음)"}</span><span class="post-author-tag">${authorShort}</span>`;
             li.onclick = () => loadPost(p.id);
             if (currentPostId === p.id) li.classList.add('selected');
             postList.appendChild(li);
@@ -293,6 +309,17 @@
         viewContent.textContent = p.content;
         currentImages = [...(p.images || [])];
         renderGalleries();
+
+        // 권한 확인
+        const isAdmin = auth.currentUser.email === ADMIN_EMAIL;
+        const isAuthor = auth.currentUser.email === p.author;
+        document.getElementById('editBtn').classList.toggle('hidden', !isAdmin && !isAuthor);
+        document.getElementById('deleteBtn').classList.toggle('hidden', !isAdmin && !isAuthor);
+
+        // 공지 체크박스 초기화
+        document.getElementById('postIsNotice').checked = !!p.isNotice;
+        document.getElementById('noticeGroup').classList.toggle('hidden', !isAdmin);
+
         switchMode('view');
     }
 
@@ -325,6 +352,7 @@
     async function savePost() {
         const title = postTitle.value.trim();
         const content = postContent.value.trim();
+        const isNotice = document.getElementById('postIsNotice').checked;
         if (!title) { statusField.textContent = "⚠️ 제목을 입력하세요!"; return; }
 
         saveBtn.disabled = true;
@@ -336,6 +364,7 @@
             content, 
             images: currentImages, 
             author: auth.currentUser.email,
+            isNotice: isNotice,
             createdAt: existingPost ? (existingPost.createdAt || Date.now()) : Date.now(),
             updatedAt: Date.now() 
         };
@@ -398,6 +427,8 @@
     saveBtn.onclick = savePost;
     document.getElementById('newPostBtn').onclick = () => {
         currentPostId = null; postTitle.value = ''; postContent.value = ''; currentImages = [];
+        document.getElementById('postIsNotice').checked = false;
+        document.getElementById('noticeGroup').classList.toggle('hidden', auth.currentUser.email !== ADMIN_EMAIL);
         renderGalleries(); switchMode('edit'); postTitle.focus();
         statusField.textContent = "새 글 작성 중...";
     };
